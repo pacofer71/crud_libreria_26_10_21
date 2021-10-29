@@ -1,43 +1,50 @@
 <?php
+if (!isset($_GET['id'])) {
+    header("Location:index.php");
+}
 session_start();
 require dirname(__DIR__, 2) . "/vendor/autoload.php";
 
 use Libreria\Autores;
 
+$id = $_GET['id'];
+$datosAutor = (new Autores)->read($id);
 function hayError($n, $a, $p)
 {
     $error = false;
     if (strlen($n) == 0) {
-        $_SESSION['error_nombre'] = "Rellene el Campo Nombre!!!";
+        $_SESSION['error_nombre'] = "Rellene el campo nombre";
         $error = true;
     }
     if (strlen($a) == 0) {
-        $_SESSION['error_apellidos'] = "Rellene el Campo Apellidos!!!";
+        $_SESSION['error_apellidos'] = "Rellene el campo apellidos";
         $error = true;
     }
     if (strlen($p) == 0) {
-        $_SESSION['error_pais'] = "Rellene el Campo Pais!!!";
+        $_SESSION['error_pais'] = "Rellene el campo pais";
         $error = true;
     }
     return $error;
 }
-if (isset($_POST['btnCrear'])) {
-    //Procesamos el formulario
+if (isset($_POST['btnUpdate'])) {
+    //procesamos el Formulario
     $nombre = trim(ucwords($_POST['nombre']));
     $apellidos = trim(ucwords($_POST['apellidos']));
     $pais = trim(ucwords($_POST['pais']));
     if (!hayError($nombre, $apellidos, $pais)) {
-        //podemos hacer el insert 
         (new Autores)->setNombre($nombre)
             ->setApellidos($apellidos)
             ->setPais($pais)
-            ->create();
-        $_SESSION['mensaje'] = "Autor creado con éxito.";
+            ->setId($id)
+            ->update();
+        $_SESSION['mensaje'] = "Autor actualizado con exito";
         header("Location:index.php");
         die();
     }
-    header("Location:{$_SERVER['PHP_SELF']}");
+    //
+    header("Location:{$_SERVER['PHP_SELF']}?id=$id");
 } else {
+
 ?>
     <!DOCTYPE html>
     <html lang="es">
@@ -51,7 +58,7 @@ if (isset($_POST['btnCrear'])) {
         <!-- FONTAWESOME -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <title>Crear Autor</title>
+        <title>Actualizar Autor</title>
 
 
 
@@ -60,13 +67,13 @@ if (isset($_POST['btnCrear'])) {
     </head>
 
     <body style="background-color:silver">
-        <h3 class="text-center">Nuevo Autor</h3>
+        <h3 class="text-center">Actualizar Autor</h3>
         <div class="container mt-2">
-            <form name="cautor" action="<?php echo $_SERVER['PHP_SELF']; ?>" method='POST'>
+            <form name="cautor" action="<?php echo $_SERVER['PHP_SELF'] . "?id=$id"; ?>" method='POST'>
                 <div class="bg-success p-4 text-white rounded shadow-lg m-auto" style="width:40rem">
                     <div class="mb-3">
                         <label for="n" class="form-label">Nombre Autor</label>
-                        <input type="text" class="form-control" id="n" placeholder="Nombre" name="nombre" required>
+                        <input type="text" class="form-control" id="n" placeholder="Nombre" name="nombre" value="<?php echo $datosAutor->nombre ?>" required>
                         <?php
                         if (isset($_SESSION['error_nombre'])) {
                             echo <<<TXT
@@ -77,10 +84,11 @@ if (isset($_POST['btnCrear'])) {
                             unset($_SESSION['error_nombre']);
                         }
                         ?>
+
                     </div>
                     <div class="mb-3">
                         <label for="a" class="form-label">Apellidos Autor</label>
-                        <input type="text" class="form-control" id="a" placeholder="Apellidos" name="apellidos" required>
+                        <input type="text" class="form-control" id="a" placeholder="Apellidos" name="apellidos" value="<?php echo $datosAutor->apellidos ?>" required>
                         <?php
                         if (isset($_SESSION['error_apellidos'])) {
                             echo <<<TXT
@@ -94,7 +102,7 @@ if (isset($_POST['btnCrear'])) {
                     </div>
                     <div class="mb-3">
                         <label for="p" class="form-label">País Autor</label>
-                        <input type="text" class="form-control" id="p" placeholder="País" name="pais" required>
+                        <input type="text" class="form-control" id="p" placeholder="País" name="pais" value="<?php echo $datosAutor->pais ?>" required>
                         <?php
                         if (isset($_SESSION['error_pais'])) {
                             echo <<<TXT
@@ -105,11 +113,12 @@ if (isset($_POST['btnCrear'])) {
                             unset($_SESSION['error_pais']);
                         }
                         ?>
+
                     </div>
 
                     <div>
-                        <button type='submit' name="btnCrear" class="btn btn-info"><i class="fas fa-save"></i> Crear</button>
-                        <button type="reset" class="btn btn-warning"><i class="fas fa-broom"></i> Limpiar</button>
+                        <button type='submit' name="btnUpdate" class="btn btn-info"><i class="fas fa-user-edit"></i> Actualizar</button>
+                        <a href="index.php" class="btn btn-primary"><i class="fas fa-backward"></i> Volver</a>
                     </div>
                 </div>
             </form>

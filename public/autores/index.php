@@ -30,6 +30,16 @@ $datosAutores = (new Autores)->readAll();
 <body style="background-color:silver">
     <h3 class="text-center">Gestion Autores</h3>
     <div class="container mt-2">
+        <?php
+        if (isset($_SESSION['mensaje'])) {
+            echo <<<TXT
+                <div class="alert alert-primary" role="alert">
+                {$_SESSION['mensaje']}
+                </div>
+                TXT;
+            unset($_SESSION['mensaje']);
+        }
+        ?>
         <a href="cautor.php" class="btn btn-primary mb-2"><i class="fas fa-user-plus"></i> Nuevo Autor</a>
         <table class="table table-success table-striped">
             <thead>
@@ -43,15 +53,21 @@ $datosAutores = (new Autores)->readAll();
             </thead>
             <tbody>
                 <?php
-                while($fila=$datosAutores->fetch(PDO::FETCH_OBJ)){
-                echo <<<TXT
+                while ($fila = $datosAutores->fetch(PDO::FETCH_OBJ)) {
+                    echo <<<TXT
 
                 <tr>
                     <th scope="row">{$fila->id}</th>
                     <td>{$fila->nombre}</td>
                     <td>{$fila->apellidos}</td>
                     <td>{$fila->pais}</td>
-                    <td>#</td>
+                    <td>
+                    <form name='s' action='bautor.php' method='POST'>
+                    <input type='hidden' name='id' value='{$fila->id}'>
+                    <a href="uautor.php?id={$fila->id}" class="btn btn-warning"><i class="fas fa-user-edit"></i></a>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea Borrar el Autor?')"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                    </td>
                 </tr>
                 TXT;
                 }
