@@ -1,0 +1,20 @@
+{
+    "name": "pacofer71/libreria",
+    "description": "Ejemplo PDO Libreria",
+    "type": "project",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Libreria\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pacofer71",
+            "email": "pacofer71@gmail.com"
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.16"
+    }
+}
