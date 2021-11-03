@@ -40,20 +40,22 @@ $datosLibro = (new Libros)->read($_GET['id']);
             </p>
             <p class="mt-3">
                 <b>Autor: </b>
-                <a href="filtro.php?value=<?php echo $datosLibro->autor_id ?>" class="p-1 rounded-pill bg-warning" style="text-decoration:none" >
-                <?php echo $datosLibro->nombre . " " . $datosLibro->apellidos . " (" . $datosLibro->autor_id . ")"; ?></a>
+                <a href="filtro.php?value=<?php echo $datosLibro->autor_id ?>&campo=autor_id" class="p-1 rounded-pill bg-warning" style="text-decoration:none">
+                    <?php echo $datosLibro->nombre . " " . $datosLibro->apellidos . " (" . $datosLibro->autor_id . ")"; ?></a>
             </p>
             <p class="mt-3">
                 <b>País: </b>
-                <?php echo $datosLibro->pais; ?>
+                <a href="filtro.php?value=<?php echo $datosLibro->pais ?>&campo=pais" class="p-1 rounded-pill bg-danger" style="text-decoration:none">
+                    <?php echo $datosLibro->pais; ?>
+                </a>
             </p>
             <div class="mt-2">
                 <a href="index.php" class="btn btn-secondary">
                     <i class="fa fa-backward"></i> Volver</a>
             </div>
-        <div>
+            <div>
 
-    </div>
+            </div>
 </body>
 
 </html>

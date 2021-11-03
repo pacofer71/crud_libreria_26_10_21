@@ -70,6 +70,24 @@ class Libros extends Conexion
         parent::$conexion=null;
         return $stmt;
     }
+    public function librosxcampos($v, $c){
+        if($c=="autor_id"){
+            $q="select * from libros where autor_id=:parametro order by titulo";
+        }
+        if($c=="pais"){
+            $q="select libros.* from libros, autores where autor_id=autores.id AND pais=:parametro order by titulo";
+        }
+        $stmt=parent::$conexion->prepare($q);
+        try{
+            $stmt->execute([
+                ':parametro'=>$v
+            ]);
+        }catch(PDOException $ex){
+            die("Error al devolver libros por campos: ".$ex->getMessage());
+        }
+        parent::$conexion=null;
+        return $stmt;
+    }
 
     //---------------------Otros Métodos------------
     public function generarLibros($cant)
