@@ -32,6 +32,16 @@ $stmt = (new Libros)->readAll();
 <body style="background-color:silver">
     <h3 class="text-center">Gestión de Libros</h3>
     <div class="container mt-2">
+        <?php
+            if(isset($_SESSION['mensaje'])){
+                echo <<<TXT
+                <div class="alert alert-primary" role="alert">
+                {$_SESSION['mensaje']}
+                </div>
+                TXT;
+                unset($_SESSION['mensaje']);
+            }
+        ?>
         <a href="clibro.php" class="btn btn-primary mb-2"><i class="fas fa-book-medical"></i> Nuevo Libro</a>
         <table class="table table-info table-striped">
             <thead>
@@ -53,7 +63,13 @@ $stmt = (new Libros)->readAll();
                     <td>{$fila->titulo}</td>
                     
                     <td>{$fila->autor_id}</td>
-                    <td>#</td>
+                    <td>
+                    <form name='s' action='blibro.php' method='POST'>
+                    <input type='hidden' name='id' value='{$fila->id}'>
+                    <a href="ulibro.php?id={$fila->id}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea Borrar el Libro?')"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                    </td>
                 </tr>
                 TXT;
                 }

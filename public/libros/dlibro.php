@@ -45,7 +45,7 @@ $datosLibro = (new Libros)->read($_GET['id']);
             </p>
             <p class="mt-3">
                 <b>País: </b>
-                <a href="filtro.php?value=<?php echo $datosLibro->pais ?>&campo=pais" class="p-1 rounded-pill bg-danger" style="text-decoration:none">
+                <a href="filtro.php?value=<?php echo $datosLibro->pais ?>&campo=pais" class="p-1 rounded-pill bg-success text-light" style="text-decoration:none">
                     <?php echo $datosLibro->pais; ?>
                 </a>
             </p>

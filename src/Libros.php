@@ -56,8 +56,18 @@ class Libros extends Conexion
     public function update()
     {
     }
-    public function delete()
+    public function delete($id)
     {
+        $q="delete from libros where id=:i";
+        $stmt=parent::$conexion->prepare($q);
+        try{
+            $stmt->execute([
+                ':i'=>$id
+            ]);
+        }catch(PDOException $ex){
+            die("Error al borrar Libro: ".$ex->getMessage());
+        }
+        parent::$conexion=null;
     }
     public function readAll(){
         $q="select * from libros order by titulo, autor_id";
