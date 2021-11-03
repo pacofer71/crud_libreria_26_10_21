@@ -3,6 +3,7 @@
 namespace Libreria;
 
 use PDOException;
+use PDO;
 use Faker;
 
 class Libros extends Conexion
@@ -35,9 +36,23 @@ class Libros extends Conexion
         };
         parent::$conexion = null;
     }
-    public function read()
+    //----------------------------------------------------------------------------------------
+    public function read($id)
     {
+        $q="select libros.*, nombre, apellidos, pais from libros, autores where 
+        autor_id=autores.id AND libros.id=:i";
+        $stmt=parent::$conexion->prepare($q);
+        try{
+            $stmt->execute([
+                ':i'=>$id
+            ]);
+        }catch(PDOException $ex){
+            die("Error al recuperar UN libro: ".$ex->getMessage());
+        }
+        parent::$conexion=null;
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
+    //-------------------------------------------------------------------------------
     public function update()
     {
     }
