@@ -39,63 +39,78 @@ class Libros extends Conexion
     //----------------------------------------------------------------------------------------
     public function read($id)
     {
-        $q="select libros.*, nombre, apellidos, pais from libros, autores where 
+        $q = "select libros.*, nombre, apellidos, pais from libros, autores where 
         autor_id=autores.id AND libros.id=:i";
-        $stmt=parent::$conexion->prepare($q);
-        try{
+        $stmt = parent::$conexion->prepare($q);
+        try {
             $stmt->execute([
-                ':i'=>$id
+                ':i' => $id
             ]);
-        }catch(PDOException $ex){
-            die("Error al recuperar UN libro: ".$ex->getMessage());
+        } catch (PDOException $ex) {
+            die("Error al recuperar UN libro: " . $ex->getMessage());
         }
-        parent::$conexion=null;
+        parent::$conexion = null;
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
     //-------------------------------------------------------------------------------
-    public function update()
+    public function update($id)
     {
+        $q = "update libros set titulo=:t, sinopsis=:s, autor_id=:ai, isbn=:isbn where id=:id";
+        $stmt = parent::$conexion->prepare($q);
+        try {
+            $stmt->execute([
+                ':t' => $this->titulo,
+                ':s' => $this->sinopsis,
+                ':ai' => $this->autor_id,
+                ':isbn' => $this->isbn,
+                ':id' => $id
+            ]);
+        } catch (PDOException $ex) {
+            die("Error al actualizar el Libro: " . $ex->getMessage());
+        }
     }
     public function delete($id)
     {
-        $q="delete from libros where id=:i";
-        $stmt=parent::$conexion->prepare($q);
-        try{
+        $q = "delete from libros where id=:i";
+        $stmt = parent::$conexion->prepare($q);
+        try {
             $stmt->execute([
-                ':i'=>$id
+                ':i' => $id
             ]);
-        }catch(PDOException $ex){
-            die("Error al borrar Libro: ".$ex->getMessage());
+        } catch (PDOException $ex) {
+            die("Error al borrar Libro: " . $ex->getMessage());
         }
-        parent::$conexion=null;
+        parent::$conexion = null;
     }
-    public function readAll(){
-        $q="select * from libros order by titulo, autor_id";
-        $stmt=parent::$conexion->prepare($q);
-        try{
+    public function readAll()
+    {
+        $q = "select * from libros order by titulo, autor_id";
+        $stmt = parent::$conexion->prepare($q);
+        try {
             $stmt->execute();
-        }catch(PDOException $ex){
-            die("Error al devolver todos los libros: ".$ex->getMessage());
+        } catch (PDOException $ex) {
+            die("Error al devolver todos los libros: " . $ex->getMessage());
         }
-        parent::$conexion=null;
+        parent::$conexion = null;
         return $stmt;
     }
-    public function librosxcampos($v, $c){
-        if($c=="autor_id"){
-            $q="select * from libros where autor_id=:parametro order by titulo";
+    public function librosxcampos($v, $c)
+    {
+        if ($c == "autor_id") {
+            $q = "select * from libros where autor_id=:parametro order by titulo";
         }
-        if($c=="pais"){
-            $q="select libros.* from libros, autores where autor_id=autores.id AND pais=:parametro order by titulo";
+        if ($c == "pais") {
+            $q = "select libros.* from libros, autores where autor_id=autores.id AND pais=:parametro order by titulo";
         }
-        $stmt=parent::$conexion->prepare($q);
-        try{
+        $stmt = parent::$conexion->prepare($q);
+        try {
             $stmt->execute([
-                ':parametro'=>$v
+                ':parametro' => $v
             ]);
-        }catch(PDOException $ex){
-            die("Error al devolver libros por campos: ".$ex->getMessage());
+        } catch (PDOException $ex) {
+            die("Error al devolver libros por campos: " . $ex->getMessage());
         }
-        parent::$conexion=null;
+        parent::$conexion = null;
         return $stmt;
     }
 
@@ -132,6 +147,26 @@ class Libros extends Conexion
         $totalLibros = $stmt->rowCount();
         parent::$conexion = null;
         return ($totalLibros > 0);
+    }
+    //----------------------------------------------------------------
+
+    public function existeIsbn($i)
+    {
+        if (isset($this->id)) {
+            $q = "select * from libros where isbn=:i AND id!={$this->id}";
+        } else {
+            $q = "select * from libros where isbn=:i";
+        }
+        $stmt = parent::$conexion->prepare($q);
+        try {
+            $stmt->execute([
+                ':i' => $i
+            ]);
+        } catch (PDOException $ex) {
+            die("Error al comprobar el ISBN: " . $ex->getMessage());
+        }
+        parent::$conexion = null;
+        return ($stmt->rowCount() == 1);
     }
 
     //----------------------------------------------------
